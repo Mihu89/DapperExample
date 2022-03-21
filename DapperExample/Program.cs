@@ -15,8 +15,19 @@ namespace DapperExample
         private static string _connectionString = @"Server=93.115.141.254,10433;Database=MAGAZIN;User Id=itstep;Password=itstep++;";
         static async Task Main(string[] args)
         {
-            await UsingCRUD();
+            //await UsingCRUD();
+            await UsingRepository();
             Console.Read();
+        }
+
+        private static async Task UsingRepository()
+        {
+            var userRepository = new UserRepository("Users");
+            var users = await userRepository.GetAllAsync();
+            foreach (var user in users)
+            {
+                Console.WriteLine($"{user.Id} {user.Name} {user.Age}");
+            }
         }
 
         private static async Task UsingCRUD()
@@ -50,6 +61,24 @@ namespace DapperExample
             var removed = await db.ExecuteAsync(
                 "delete from FIRMA where FIRMA_ID = @id", new { id });
             Console.WriteLine($"Was removed {removed} rows");
+
+            // update example
+
+            //Get id after insert
+
+            using (IDbConnection _db = new SqlConnection(_connectionString))
+            {
+                var firmaToInsert = new Firma
+                {
+                    NUME = "SIS",
+                    COD_FISCAL = "1009650029038",
+                    ADRESA = "str. Stefan cel Mare 100"
+                };
+                var sqlQuery = "INSERT INTO FIRMA (NUME,COD_FISCAL,ADRESA) VALUES(@NUME, @COD_FISCAL,@ADRESA); SELECT CAST(SCOPE_IDENTITY() as int)";
+                int? firmaID = db.Query<int>(sqlQuery, firmaToInsert).FirstOrDefault();
+                firmaToInsert.FIRMA_ID = firmaID ?? 0;
+                Console.WriteLine("Last id is {0}", firmaToInsert.FIRMA_ID);
+            }
         }
     }
 }
