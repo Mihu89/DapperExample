@@ -43,6 +43,13 @@ namespace DapperExample
             var affectedRows = await db.ExecuteAsync(@"insert FIRMA(NUME,COD_FISCAL,ADRESA) values (@nume, @codFiscal, @adresa)",
                                                 new {nume, codFiscal, adresa });
             Console.WriteLine("Insert was done {0}", affectedRows);
+
+            // Delete example
+            Console.WriteLine("Write id to delete");
+            int id = int.Parse(Console.ReadLine());
+            var removed = await db.ExecuteAsync(
+                "delete from FIRMA where FIRMA_ID = @id", new { id });
+            Console.WriteLine($"Was removed {removed} rows");
         }
     }
 }
