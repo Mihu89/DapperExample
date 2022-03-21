@@ -36,8 +36,13 @@ namespace DapperExample
             }
 
             // Insert example
-
-             
+            // read from console 
+            string nume = "SA Bucurel-2";
+            string codFiscal = "1009600029041";
+            string adresa = "Chisinau str.Uzinelor 21";
+            var affectedRows = await db.ExecuteAsync(@"insert FIRMA(NUME,COD_FISCAL,ADRESA) values (@nume, @codFiscal, @adresa)",
+                                                new {nume, codFiscal, adresa });
+            Console.WriteLine("Insert was done {0}", affectedRows);
         }
     }
 }
